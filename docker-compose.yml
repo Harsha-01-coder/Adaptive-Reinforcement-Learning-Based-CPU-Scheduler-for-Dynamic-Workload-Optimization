@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL (optional — comment out for SQLite dev) ──────
+  db:
+    image: postgres:16-alpine
+    container_name: rl_scheduler_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: scheduler_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── FastAPI Backend ─────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rl_scheduler_backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/scheduler_db
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_PORT: 8000
+      DEBUG: "false"
+      ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:3000,http://frontend:3000"
+      RL_MODEL_PATH: /app/rl_agent/models/ppo_cpu_scheduler
+      EXPORT_DIR: /app/exports
+    volumes:
+      - ./backend/rl_agent/models:/app/rl_agent/models
+      - ./backend/exports:/app/exports
+      - ./backend/data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── React Frontend ──────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: rl_scheduler_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:

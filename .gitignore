@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Python cache & virtualenvs
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Databases
+data/
+*.db
+*.sqlite
+
+# Exports & user generated files
+exports/
+rl_agent/models/ppo_cpu_scheduler.zip
+rl_agent/models/*.zip
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.antigravity-ide/
+.gemini/
+
+# Environment local secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+dist/
+build/
