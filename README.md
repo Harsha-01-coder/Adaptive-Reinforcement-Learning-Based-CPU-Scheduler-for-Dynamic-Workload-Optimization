@@ -91,6 +91,49 @@ npm run dev
 
 ---
 
+## ☁️ Internet Cloud Deployment
+
+This project is fully pre-configured to deploy on the internet for free using **Vercel** (Frontend) and **Render** (FastAPI Backend + PostgreSQL database):
+
+### 1. Database (Render PostgreSQL)
+* Create a free **PostgreSQL Database** on Render.
+* Copy the **External Connection String** (format: `postgresql://...`).
+* Convert the prefix from `postgresql://` to `postgresql+asyncpg://` for asynchronous python database driver compatibility.
+
+### 2. Backend (Render Web Service)
+* Create a new **Web Service** pointing to your repository.
+* Set the **Root Directory** to `backend`.
+* **Build Command**: `pip install -r requirements.txt`
+* **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+* Set **Environment Variables**:
+  * `DATABASE_URL` = (Your converted `postgresql+asyncpg://...` URL)
+  * `DEBUG` = `false`
+  * `ALLOWED_ORIGINS` = `https://your-app-name.vercel.app`
+
+### 3. Frontend (Vercel SPA static hosting)
+* Import the repository in Vercel.
+* Set the **Root Directory** to `frontend`.
+* Add the **Environment Variable**:
+  * `VITE_API_URL` = (Your Render backend URL, e.g., `https://your-backend.onrender.com`)
+* Hit **Deploy**. Vercel will read the `vercel.json` routing configuration and deploy the responsive React panel instantly.
+
+---
+
+## 🎛️ Dynamic Training Abort (Stop Training)
+The project supports early cancellation of PPO agent training loops:
+* **Custom SB3 Callback**: The training executor registers a callback that checks a cancellation flag on every environment step inside Stable-Baselines3.
+* **Dashboard Control**: Click **Stop Training** (red button) during active training to send a `POST /api/rl/stop` request, immediately halting calculations and closing WebSocket logs.
+
+---
+
+## 📚 Study & Interview Guides
+For university presentations, placements, and system defense reviews, we have compiled comprehensive reference manuals inside the [docs/](file:///c:/Users/harsh/OneDrive/Desktop/Adaptive%20Reinforcement%20Learning-Based%20CPU%20Scheduler%20for%20Dynamic%20Workload%20Optimization/docs) directory:
+* 🎓 **[Interview Masterclass](file:///c:/Users/harsh/OneDrive/Desktop/Adaptive%20Reinforcement%20Learning-Based%20CPU%20Scheduler%20for%20Dynamic%20Workload%20Optimization/docs/INTERVIEW_MASTERCLASS.docx)**: In-depth Q&A covering OS math, Gymnasium dimensions, rewards, PPO policy gradient details, and backend ASGI concurrency.
+* 🚀 **[Future Scope & Roadmap](file:///c:/Users/harsh/OneDrive/Desktop/Adaptive%20Reinforcement%20Learning-Based%20CPU%20Scheduler%20for%20Dynamic%20Workload%20Optimization/docs/FUTURE_SCOPE.md)**: Conceptual guide to scaling this project to Kubernetes cluster scheduling, eBPF Linux kernel hooks, and thermal DVFS energy models.
+* 📖 **[Project Design Guide](file:///c:/Users/harsh/OneDrive/Desktop/Adaptive%20Reinforcement%20Learning-Based%20CPU%20Scheduler%20for%20Dynamic%20Workload%20Optimization/docs/PROJECT_GUIDE.md)**: Step-by-step structural walkthrough of the simulator components.
+
+---
+
 ## 🧠 Reinforcement Learning Design
 
 ### 1. State Space (252-dimensional Observation Vector)
