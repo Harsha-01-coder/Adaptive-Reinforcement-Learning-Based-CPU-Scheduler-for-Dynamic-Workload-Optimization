@@ -1,6 +1,13 @@
 import axios from 'axios'
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+export const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+
+export const getWebSocketUrl = (path) => {
+  const base = import.meta.env.VITE_API_URL || (window.location.origin.includes('localhost') ? 'http://127.0.0.1:8000' : window.location.origin)
+  const url = new URL(path, base)
+  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+  return url.toString()
+}
 
 const api = axios.create({
   baseURL: BASE_URL,

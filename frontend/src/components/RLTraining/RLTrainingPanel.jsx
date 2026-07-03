@@ -4,7 +4,7 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts'
 import { Brain, Play, Square, RefreshCw, CheckCircle2, XCircle, Loader2 } from 'lucide-react'
-import { startTraining, getRLStatus } from '../../api/client'
+import { startTraining, getRLStatus, getWebSocketUrl } from '../../api/client'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -50,7 +50,7 @@ export default function RLTrainingPanel() {
   // WebSocket for live reward updates
   useEffect(() => {
     if (status.status !== 'training') return
-    const ws = new WebSocket('ws://127.0.0.1:8000/api/rl/ws/training')
+    const ws = new WebSocket(getWebSocketUrl('/api/rl/ws/training'))
     wsRef.current = ws
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data)
