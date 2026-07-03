@@ -20,25 +20,36 @@ Designed as an advanced systems engineering and machine learning showcase, this 
 ## 🏛️ Project Architecture & Data Flow
 
 ```
-                     ┌─────────────────────────────────────────────────┐
-                     │                   Frontend                      │
-                     │  React 18 + Vite + TailwindCSS + Recharts        │
-                     │  Pages: Dashboard, Simulator, Benchmark, RL      │
-                     └──────────────────────┬──────────────────────────┘
-                                            │ REST / WebSockets
-                     ┌──────────────────────▼──────────────────────────┐
-                     │                  FastAPI Backend                  │
-                     │  /api/simulate  /api/benchmark  /api/rl/*        │
-                     │  /api/workload  /api/export                      │
-                     └──────────────────────┬──────────────────────────┘
-                                            │
-                          ┌─────────────────┼──────────────────┐
-                          │                 │                  │
-                     ┌───▼───┐       ┌──────▼──────┐   ┌──────▼──────┐
-                     │  DB   │       │  Schedulers │   │   RL Agent   │
-                     │SQLite │       │FCFS SJF RR  │   │PPO+Gymnasium │
-                     │ORMs   │       │Priority SRTF│   │ Stable-SB3   │
-                     └───────┘       └─────────────┘   └─────────────┘
+                            ┌────────────────────────────────────────────────────────┐
+                            │                    REACT 18 CLIENT                     │
+                            │                (Vite · Tailwind · CSS)                 │
+                            ├────────────────────────────────────────────────────────┤
+                            │  • Dashboard Analytics    • Multi-core Gantt charts    │
+                            │  • Benchmark Comparisons  • Live training progress     │
+                            └───────────────────────────┬────────────────────────────┘
+                                                        │
+                                                        │ HTTP REST (JSON) / WebSockets
+                                                        ▼
+                            ┌────────────────────────────────────────────────────────┐
+                            │                    FASTAPI BACKEND                     │
+                            │                (ASGI Web Server · Python)              │
+                            ├────────────────────────────────────────────────────────┤
+                            │  • REST Endpoints (/api/simulate, /api/benchmark)      │
+                            │  • WebSocket Server (/api/rl/ws/training)              │
+                            │  • Background Thread Task Executor                     │
+                            └───────────────────────────┬────────────────────────────┘
+                                                        │
+                                      ┌─────────────────┼─────────────────┐
+                                      │ Database        │ Engine          │ Engine
+                                      ▼                 ▼                 ▼
+                            ┌──────────────────┐ ┌──────────────┐ ┌──────────────┐
+                            │  POSTGRESQL /    │ │  CLASSICAL   │ │   PYTORCH    │
+                            │  SQLITE DATABASE │ │  SCHEDULERS  │ │   RL AGENT   │
+                            ├──────────────────┤ ├──────────────┤ ├──────────────┤
+                            │ • SQLAlchemy ORM │ │ • FCFS / SJF │ │ • PPO Model  │
+                            │ • Simulation runs│ │ • SRTF / RR  │ │ • Gym Env    │
+                            │ • Preset loads   │ │ • Priority   │ │ • Obs: 252-D │
+                            └──────────────────┘ └──────────────┘ └──────────────┘
 ```
 
 ---
