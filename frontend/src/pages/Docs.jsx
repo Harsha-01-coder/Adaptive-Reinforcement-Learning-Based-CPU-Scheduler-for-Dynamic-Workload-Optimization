@@ -18,6 +18,7 @@ import {
   FileText
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { BASE_URL } from '../api/client'
 
 // ─── Sub-Components for Premium Tabs ──────────────────────────────────────────
 
@@ -342,9 +343,9 @@ function ApiTab() {
       <div className="glass p-4 flex items-center justify-between border-brand-500/20 bg-brand-500/5">
         <div className="flex items-center gap-2">
           <Terminal size={15} className="text-brand-400" />
-          <p className="text-xs text-slate-300 font-semibold">Swagger UI Interactive Docs: http://127.0.0.1:8000/docs</p>
+          <p className="text-xs text-slate-300 font-semibold">Swagger UI Interactive Docs: {BASE_URL}/docs</p>
         </div>
-        <a href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer" className="btn-secondary text-[11px] py-1 px-3">
+        <a href={`${BASE_URL}/docs`} target="_blank" rel="noopener noreferrer" className="btn-secondary text-[11px] py-1 px-3">
           Open Swagger <ExternalLink size={10} className="inline ml-1" />
         </a>
       </div>
@@ -411,7 +412,7 @@ export default function Docs() {
           </button>
         ))}
         <a
-          href="http://127.0.0.1:8000/docs"
+          href={`${BASE_URL}/docs`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold glass border-transparent text-slate-400 hover:text-white hover:border-white/10"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Upload, Shuffle, Database, Plus, Trash2, Download } from 'lucide-react'
-import { generateWorkload, uploadWorkload } from '../../api/client'
+import { generateWorkload, uploadWorkload, BASE_URL } from '../../api/client'
 import toast from 'react-hot-toast'
 
 const MODES = [
@@ -220,7 +220,7 @@ export default function WorkloadConfig({ onWorkloadLoad }) {
             </p>
             <input type="file" accept=".csv" className="hidden" onChange={handleUpload} />
           </label>
-          <a href="http://127.0.0.1:8000/api/workload/template" download
+          <a href={`${BASE_URL}/api/workload/template`} download
              className="btn-secondary w-full text-xs flex items-center justify-center gap-2">
             <Download size={12} /> Download Template CSV
           </a>

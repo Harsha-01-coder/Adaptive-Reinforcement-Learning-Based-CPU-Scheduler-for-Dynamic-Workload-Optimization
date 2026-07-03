@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom'
 import { Moon, Sun, Github } from 'lucide-react'
+import { BASE_URL } from '../../api/client'
 
 const PAGE_META = {
   '/':          { title: 'Dashboard',  subtitle: 'System overview and quick stats' },
@@ -25,7 +26,7 @@ export default function Header() {
       <div className="flex items-center gap-3">
         {/* API Docs link */}
         <a
-          href="http://127.0.0.1:8000/docs"
+          href={`${BASE_URL}/docs`}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-secondary py-1.5 px-3 text-xs"
