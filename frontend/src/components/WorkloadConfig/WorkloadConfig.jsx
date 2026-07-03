@@ -148,33 +148,52 @@ export default function WorkloadConfig({ onWorkloadLoad }) {
       {/* Manual tab */}
       {tab === 'manual' && (
         <div className="space-y-3">
-          <div className="max-h-64 overflow-y-auto space-y-2">
+          {customProcs.length > 0 && (
+            <div className="grid grid-cols-5 gap-1.5 px-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider text-center">
+              <span>Arrival</span>
+              <span>Burst</span>
+              <span>Priority</span>
+              <span>Type</span>
+              <span></span>
+            </div>
+          )}
+          <div className="max-h-64 overflow-y-auto space-y-2 pr-1">
             {customProcs.map((p, i) => (
-              <div key={i} className="grid grid-cols-5 gap-1.5 items-end">
-                <div>
-                  <label className="label">Arrival</label>
-                  <input className="input" type="number" value={p.arrival_time}
-                         onChange={e => updateProc(i, 'arrival_time', e.target.value)} min={0} />
-                </div>
-                <div>
-                  <label className="label">Burst</label>
-                  <input className="input" type="number" value={p.burst_time}
-                         onChange={e => updateProc(i, 'burst_time', e.target.value)} min={1} />
-                </div>
-                <div>
-                  <label className="label">Priority</label>
-                  <input className="input" type="number" value={p.priority}
-                         onChange={e => updateProc(i, 'priority', e.target.value)} min={1} max={10} />
-                </div>
-                <div>
-                  <label className="label">Type</label>
-                  <select className="select" value={p.process_type}
-                          onChange={e => updateProc(i, 'process_type', e.target.value)}>
-                    <option value="cpu_bound">CPU</option>
-                    <option value="io_bound">I/O</option>
-                  </select>
-                </div>
-                <button onClick={() => removeProc(i)} className="btn-danger py-2 px-2 mb-0">
+              <div key={i} className="grid grid-cols-5 gap-1.5 items-center">
+                <input
+                  className="input px-1.5 py-1 text-xs text-center h-8"
+                  type="number"
+                  value={p.arrival_time}
+                  onChange={e => updateProc(i, 'arrival_time', e.target.value)}
+                  min={0}
+                />
+                <input
+                  className="input px-1.5 py-1 text-xs text-center h-8"
+                  type="number"
+                  value={p.burst_time}
+                  onChange={e => updateProc(i, 'burst_time', e.target.value)}
+                  min={1}
+                />
+                <input
+                  className="input px-1.5 py-1 text-xs text-center h-8"
+                  type="number"
+                  value={p.priority}
+                  onChange={e => updateProc(i, 'priority', e.target.value)}
+                  min={1}
+                  max={10}
+                />
+                <select
+                  className="select px-1.5 py-1 text-xs text-center h-8"
+                  value={p.process_type}
+                  onChange={e => updateProc(i, 'process_type', e.target.value)}
+                >
+                  <option value="cpu_bound" className="bg-slate-900 text-slate-200">CPU</option>
+                  <option value="io_bound" className="bg-slate-900 text-slate-200">I/O</option>
+                </select>
+                <button
+                  onClick={() => removeProc(i)}
+                  className="btn-danger p-1.5 flex items-center justify-center h-8 w-full"
+                >
                   <Trash2 size={12} />
                 </button>
               </div>

@@ -136,7 +136,7 @@ def train(
     model.learn(
         total_timesteps=timesteps,
         callback=[reward_callback, checkpoint_cb],
-        progress_bar=True,
+        progress_bar=False,
     )
     elapsed = time.time() - t0
 
