@@ -4,7 +4,7 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts'
 import { Brain, Play, Square, RefreshCw, CheckCircle2, XCircle, Loader2 } from 'lucide-react'
-import { startTraining, getRLStatus, getWebSocketUrl } from '../../api/client'
+import { startTraining, stopTraining, getRLStatus, getWebSocketUrl } from '../../api/client'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -76,6 +76,15 @@ export default function RLTrainingPanel() {
       toast.error(e.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleStop = async () => {
+    try {
+      await stopTraining()
+      toast.success('Aborting training...')
+    } catch (e) {
+      toast.error(e.message)
     }
   }
 
@@ -182,15 +191,26 @@ export default function RLTrainingPanel() {
             </select>
           </div>
 
-          <button
-            onClick={handleStart}
-            disabled={isTraining || loading}
-            className="btn-primary w-full"
-            id="btn-start-training"
-          >
-            {loading ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
-            {isTraining ? 'Training...' : 'Start Training'}
-          </button>
+          {isTraining ? (
+            <button
+              onClick={handleStop}
+              className="btn-danger w-full flex items-center justify-center gap-2 mt-2"
+              id="btn-stop-training"
+            >
+              <Square size={14} />
+              Stop Training
+            </button>
+          ) : (
+            <button
+              onClick={handleStart}
+              disabled={loading}
+              className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
+              id="btn-start-training"
+            >
+              {loading ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
+              Start Training
+            </button>
+          )}
         </div>
 
         {/* Live stats */}

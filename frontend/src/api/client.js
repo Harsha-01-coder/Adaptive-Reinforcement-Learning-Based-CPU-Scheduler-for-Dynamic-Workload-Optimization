@@ -55,6 +55,9 @@ export const getRLStatus = () =>
 export const startTraining = (payload) =>
   api.post('/api/rl/train', payload).then(r => r.data)
 
+export const stopTraining = () =>
+  api.post('/api/rl/stop').then(r => r.data)
+
 export const evaluateModel = (params = {}) =>
   api.post('/api/rl/evaluate', null, { params }).then(r => r.data)
 

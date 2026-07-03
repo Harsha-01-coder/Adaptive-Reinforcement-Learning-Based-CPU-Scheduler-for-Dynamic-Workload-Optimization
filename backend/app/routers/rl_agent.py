@@ -29,6 +29,7 @@ _training_state: Dict[str, Any] = {
     "reward_log": {"steps": [], "rewards": []},
     "error": None,
 }
+_training_cancelled: bool = False
 _ws_clients: List[WebSocket] = []
 
 
@@ -76,6 +77,9 @@ def _progress_callback(step: int, reward: float) -> None:
 
 async def _train_background(req: TrainRequest) -> None:
     """Background training task."""
+    global _training_cancelled
+    _training_cancelled = False
+
     state = _training_state
     state["status"] = "training"
     state["total_timesteps"] = req.timesteps
@@ -97,6 +101,7 @@ async def _train_background(req: TrainRequest) -> None:
                 model_save_path=settings.rl_model_path,
                 progress_callback=_progress_callback,
                 seed=req.seed,
+                check_cancelled=lambda: _training_cancelled,
             ),
         )
         # Merge final reward log from training script
@@ -157,6 +162,25 @@ async def start_training(
         "timesteps": request.timesteps,
         "workload_mode": request.workload_mode,
     }
+
+
+@router.post("/stop")
+async def stop_training() -> Dict[str, Any]:
+    """Stop the current active training session."""
+    global _training_state, _training_cancelled
+    if _training_state["status"] != "training":
+        raise HTTPException(status_code=400, detail="No active training session to stop")
+
+    _training_cancelled = True
+    _training_state["status"] = "failed"
+    _training_state["error"] = "Training aborted by user"
+
+    await _broadcast({
+        "type": "error",
+        "error": "Training aborted by user"
+    })
+
+    return {"message": "Training stop signal sent successfully"}
 
 
 @router.post("/evaluate")

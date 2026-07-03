@@ -34,6 +34,7 @@ def train(
     log_dir: str = "logs/ppo_cpu_scheduler",
     progress_callback: Optional[Any] = None,
     seed: int = 42,
+    check_cancelled: Optional[Any] = None,
 ) -> Dict[str, Any]:
     """
     Train a PPO agent on the CPU scheduling environment.
@@ -46,6 +47,7 @@ def train(
         log_dir: TensorBoard log directory.
         progress_callback: Optional callable(step, reward) for live updates.
         seed: Random seed.
+        check_cancelled: Optional callable returning True to abort training.
 
     Returns:
         Dictionary with training summary metrics.
@@ -94,6 +96,11 @@ def train(
             self._ep_rewards: List[float] = []
 
         def _on_step(self) -> bool:
+            # Check for early cancellation trigger
+            if check_cancelled is not None and check_cancelled():
+                print("[Train] Stop requested by client callback. Aborting...")
+                return False
+
             # Collect episode rewards from infos
             for info in self.locals.get("infos", []):
                 if "episode" in info:
